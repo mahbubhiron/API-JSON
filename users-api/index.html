@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users API</title>
+</head>
+<body>
+    <input type="text" id="user-count"><button id="load-user">Load</button>
+
+    <div id="users-container">
+
+    </div>
+
+    <button id="pre">&lt;<input type="hidden" id="pre-count" value="2"></button> <button id="next">&gt;<input type="hidden" id="next-count" value="2"></button>
+
+    <div id="users-details">
+
+    </div>
+    <script>
+        fetch('https://jsonplaceholder.typicode.com/users')
+            .then(res => res.json())
+            .then(data => {
+                data = data.slice(0,2);
+                document.getElementById('users-container').innerHTML = ' ';
+                document.getElementById('users-details').innerHTML = ' ';
+                for(let i = 0; i < data.length; i++){
+                    const users = data[i];
+                    const usersName = users.name;
+                    const p = document.createElement('p');
+                    p.innerHTML = `<p> Name: <strong> ${usersName} </strong> <button onclick="getUserDetails(${users.id});"> Details </button> </p>`;
+                    document.getElementById('users-container').appendChild(p);
+                }
+            })
+
+        document.getElementById('load-user').addEventListener('click',function(){
+            const count = document.getElementById('user-count').value;
+            fetch('https://jsonplaceholder.typicode.com/users')
+                .then(res => res.json())
+                .then(data => {
+                    data = data.slice(0,count);
+                    document.getElementById('users-container').innerHTML = ' ';
+                    document.getElementById('users-details').innerHTML = ' ';
+                    for(let i = 0; i < data.length; i++){
+                        const users = data[i];
+                        const usersName = users.name;
+                        const p = document.createElement('p');
+                        p.innerHTML = `<p> Name: <strong> ${usersName} </strong> <button onclick="getUserDetails(${users.id});"> Details </button> </p>`;
+                        document.getElementById('users-container').appendChild(p);
+                    }
+                })
+        })
+
+        document.getElementById('next').addEventListener('click', function(){
+            fetch('https://jsonplaceholder.typicode.com/users')
+                .then(res => res.json())
+                .then(data => {
+                    let nextText = document.getElementById('next-count').value;
+                    let nextCount = parseInt(nextText);
+                    console.log(nextCount);
+                    data = data.slice(nextCount,nextCount+2);
+                    document.getElementById('users-container').innerHTML = ' ';
+                    document.getElementById('users-details').innerHTML = ' ';
+                    for(let i = 0; i < data.length; i++){
+                        const users = data[i];
+                        const usersName = users.name;
+                        const p = document.createElement('p');
+                        p.innerHTML = `<p> Name: <strong> ${usersName} </strong> <button onclick="getUserDetails(${users.id});"> Details </button> </p>`;
+                        document.getElementById('users-container').appendChild(p);
+                        document.getElementById('next-count').value = nextCount+2;
+                        document.getElementById('pre-count').value = nextCount+2;
+                    }
+                    if(nextCount == 10){
+                        document.getElementById('users-container').innerHTML = 'None';
+                    }
+                })
+        })
+
+        document.getElementById('pre').addEventListener('click', function(){
+            fetch('https://jsonplaceholder.typicode.com/users')
+                .then(res => res.json())
+                .then(data => {
+                    let nextText = document.getElementById('pre-count').value;
+                    let nextCount = parseInt(nextText);
+                    console.log(nextCount);
+                    data = data.slice(nextCount-2,nextCount);
+                    document.getElementById('users-container').innerHTML = ' ';
+                    document.getElementById('users-details').innerHTML = ' ';
+                    for(let i = 0; i < data.length; i++){
+                        const users = data[i];
+                        const usersName = users.name;
+                        const p = document.createElement('p');
+                        p.innerHTML = `<p> Name: <strong> ${usersName} </strong> <button onclick="getUserDetails(${users.id});"> Details </button> </p>`;
+                        document.getElementById('users-container').appendChild(p);
+                        document.getElementById('pre-count').value = nextCount-2;
+                        document.getElementById('next-count').value = nextCount-2;
+                    }
+                    if(nextCount == 0){
+                        document.getElementById('users-container').innerHTML = 'None';
+                    }
+                })
+        })
+        
+        function getUserDetails(userId){
+            fetch(`https://jsonplaceholder.typicode.com/users/${userId}`)
+            .then(res => res.json())
+            .then(data => {
+                const userDetails = document.getElementById('users-details');
+                userDetails.innerHTML = `
+                <h2>Name: ${data.name}</h2>
+                <h4>Email: ${data.email}</h4>
+                <h4>Phone No: ${data.phone}</h4>
+                `;
+            })
+        }
+    </script>
+</body>
+</html>

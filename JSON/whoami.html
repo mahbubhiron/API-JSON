@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Who Am I</title>
+</head>
+<body>
+    <h3>Name : <span id="user_full_name"></span></h3>
+    <script>
+        function doSomething(){
+            fetch('https://randomuser.me/api')
+            .then(res => res.json())
+            .then(data => {
+                const user = data.results[0];
+                const userName = user.name;
+                const userFullName = `${userName.title}. ${userName.first} ${userName.last}`;
+                document.getElementById('user_full_name').innerText = userFullName;
+                document.getElementById('user_full_name').style.color = 'red';
+            })
+        }
+        doSomething();
+        setInterval(() => {
+            doSomething();
+        }, 2000);
+    </script>
+</body>
+</html>
